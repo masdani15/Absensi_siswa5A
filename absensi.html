@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Online Siswa</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 0.5rem; }
+        p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        select:focus { border-color: var(--primary-color); }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #357abd; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #status { margin-top: 1rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Presensi Kelas 5A</h2>
+    <p>Silakan pilih nama dan klik tombol hadir.</p>
+    
+    <select id="namaSiswa">
+        <option value="" disabled selected>-- Pilih Nama Anda --</option>
+        <option value="ADI PUTRA ANDIKA">ADI PUTRA ANDIKA</option>
+        <option value="ALFARO PUTRA MUSA">ALFARO PUTRA MUSA</option>
+        <option value="ANDI AFDHALUL FAUZA">ANDI AFDHALUL FAUZA</option>
+        <option value="ANUGERAH INGAN">ANUGERAH INGAN</option>
+        <option value="AURA LATISHA IQRAM MALEWA">AURA LATISHA IQRAM MALEWA</option>
+        <option value="DWI JULIA RAMADHANI">DWI JULIA RAMADHANI</option>
+        <option value="FALERIANI ASESIATI">FALERIANI ASESIATI</option>
+        <option value="GUMILAR FIRMANSYAH">GUMILAR FIRMANSYAH</option>
+        <option value="KRISTOFORUS DERIKO NANA">KRISTOFORUS DERIKO NANA</option>
+        <option value="MATIAS ALAN SIO PUTRA">MATIAS ALAN SIO PUTRA</option>
+        <option value="MUHAMMAD AZBIN AZIB">MUHAMMAD AZBIN AZIB</option>
+        <option value="MUHAMMAD DAFI">MUHAMMAD DAFI</option>
+        <option value="NAUFAL AMIRUL MUJIB">NAUFAL AMIRUL MUJIB</option>
+        <option value="NUR AFNISARI">NUR AFNISARI</option>
+        <option value="NUR ALIYAH">NUR ALIYAH</option>
+        <option value="NURUL IBNU FAHIRAH">NURUL IBNU FAHIRAH</option>
+        <option value="RAISHA NAZIFA LUBIS">RAISHA NAZIFA LUBIS</option>
+        <option value="RANDI FRANCISKUS SINURAT">RANDI FRANCISKUS SINURAT</option>
+        <option value="SEPTIANA TRISNA INUL">SEPTIANA TRISNA INUL</option>
+        <option value="SINTYA WELASARI">SINTYA WELASARI</option>
+        <option value="SISI AGUSTINA">SISI AGUSTINA</option>
+        <option value="YULIANA MAHUL">YULIANA MAHUL</option>
+    </select>
+
+    <button id="btnHadir" onclick="kirimAbsen()">SAYA HADIR</button>
+    <div id="status"></div>
+</div>
+
+<script>
+    async function kirimAbsen() {
+        const select = document.getElementById('namaSiswa');
+        const btn = document.getElementById('btnHadir');
+        const statusDiv = document.getElementById('status');
+        const nama = select.value;
+        
+        // SUDAH DIPERBAIKI DENGAN TANDA PETIK
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw62on8QnjVQjAGDOxR2L1SgfTRh12xF5yZ5C0VLfCZTwolXxGXGt2N_Za9nheQEZu6/exec';
+
+        if (!nama) {
+            alert("Harap pilih nama terlebih dahulu!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Mengirim...";
+        statusDiv.innerText = "Sedang mencatat...";
+        statusDiv.style.color = "orange";
+
+        try {
+            // Mode 'no-cors' kadang diperlukan jika ada masalah kebijakan akses, 
+            // tapi kita coba yang standar dulu.
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', // Menambahkan no-cors agar lebih aman dari pemblokiran browser
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    nama: nama, 
+                    kelas: "5A" 
+                })
+            });
+
+            // Karena menggunakan no-cors, kita tidak bisa membaca response.ok
+            // Jadi kita asumsikan berhasil jika tidak masuk ke blok catch
+            statusDiv.innerText = "✅ Absen Berhasil Terkirim!";
+            statusDiv.style.color = "green";
+            btn.innerText = "Sudah Terabsen";
+            
+        } catch (error) {
+            statusDiv.innerText = "❌ Gagal. Coba lagi atau hubungi guru.";
+            statusDiv.style.color = "red";
+            btn.disabled = false;
+            btn.innerText = "SAYA HADIR";
+        }
+    }
+</script>
+
+</body>
+</html>
