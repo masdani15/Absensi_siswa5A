@@ -3,51 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presensi Siswa Kelas 5A</title>
+    <title>Presensi Siswa Kelas 5A & 5B</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <style>
         :root { --primary: #4a90e2; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 90%; max-width: 380px; text-align: center; }
-        h2 { color: #333; margin-bottom: 5px; }
-        #tgl { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
-        select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; margin-bottom: 15px; outline: none; }
-        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .box { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+        
+        /* Merapikan Header */
+        h2 { color: #333; margin-bottom: 0; font-size: 1.2rem; }
+        h1 { color: var(--primary); margin-top: 5px; margin-bottom: 5px; font-size: 1.5rem; }
+        
+        #tgl { color: #888; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        label { display: block; text-align: left; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: #555; }
+        select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; margin-bottom: 15px; outline: none; background-color: #fff; cursor: pointer; }
+        select:focus { border-color: var(--primary); }
+        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #357abd; }
         button:disabled { background: #ccc; cursor: not-allowed; }
-        #status { margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
+        #status { margin-top: 15px; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>Presensi Kelas 5A</h2>
+    <h2>Presensi Online</h2>
+    <h1>Kelas 5A dan 5B</h1>
     <div id="tgl"></div>
     
-    <select id="namaSiswa">
-        <option value="" disabled selected>-- Pilih Nama Kamu --</option>
-        <option value="ADI PUTRA ANDIKA">ADI PUTRA ANDIKA</option>
-        <option value="ALFARO PUTRA MUSA">ALFARO PUTRA MUSA</option>
-        <option value="ANDI AFDHALUL FAUZA">ANDI AFDHALUL FAUZA</option>
-        <option value="ANUGERAH INGAN">ANUGERAH INGAN</option>
-        <option value="AURA LATISHA IQRAM MALEWA">AURA LATISHA IQRAM MALEWA</option>
-        <option value="DWI JULIA RAMADHANI">DWI JULIA RAMADHANI</option>
-        <option value="FALERIANI ASESIATI">FALERIANI ASESIATI</option>
-        <option value="GUMILAR FIRMANSYAH">GUMILAR FIRMANSYAH</option>
-        <option value="KRISTOFORUS DERIKO NANA">KRISTOFORUS DERIKO NANA</option>
-        <option value="MATIAS ALAN SIO PUTRA">MATIAS ALAN SIO PUTRA</option>
-        <option value="MUHAMMAD AZBIN AZIB">MUHAMMAD AZBIN AZIB</option>
-        <option value="MUHAMMAD DAFI">MUHAMMAD DAFI</option>
-        <option value="NAUFAL AMIRUL MUJIB">NAUFAL AMIRUL MUJIB</option>
-        <option value="NUR AFNISARI">NUR AFNISARI</option>
-        <option value="NUR ALIYAH">NUR ALIYAH</option>
-        <option value="NURUL IBNU FAHIRAH">NURUL IBNU FAHIRAH</option>
-        <option value="RAISHA NAZIFA LUBIS">RAISHA NAZIFA LUBIS</option>
-        <option value="RANDI FRANCISKUS SINURAT">RANDI FRANCISKUS SINURAT</option>
-        <option value="SEPTIANA TRISNA INUL">SEPTIANA TRISNA INUL</option>
-        <option value="SINTYA WELASARI">SINTYA WELASARI</option>
-        <option value="SISI AGUSTINA">SISI AGUSTINA</option>
-        <option value="YULIANA MAHUL">YULIANA MAHUL</option>
+    <label for="pilihKelas">1. Pilih Kelas:</label>
+    <select id="pilihKelas" onchange="updateNama()">
+        <option value="" disabled selected>-- Pilih Kelas --</option>
+        <option value="5A">Kelas 5A</option>
+        <option value="5B">Kelas 5B</option>
+    </select>
+
+    <label for="namaSiswa">2. Pilih Nama Kamu:</label>
+    <select id="namaSiswa" disabled>
+        <option value="" disabled selected>-- Pilih Kelas Dulu --</option>
     </select>
 
     <button id="btnHadir" onclick="kirimAbsen()">SAYA HADIR</button>
@@ -57,56 +50,91 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxW4U3F36mbA_jR6hCv6PfsBkk6Y6Orz9rs5dUewGuMJHGe0Qgx1AlJSqq_JoF9dJ8W/exec';
     
+    const daftarSiswa = {
+        "5A": [
+            "ADI PUTRA ANDIKA", "ALFARO PUTRA MUSA", "ANDI AFDHALUL FAUZAN", "ANUGERAH INGAN", 
+            "AURA LATISHA IQRAM MALEWA", "DWI JULIA RAMADHANI", "FALERIANI ASESIATI", 
+            "GUMILAR FIRMANSYAH", "KRISTOFORUS DERIKO NANA", "MATIAS ALAN SIO PUTRA", 
+            "MUHAMMAD AZBIN AZIB", "MUHAMMAD DAFI", "NAUFAL AMIRUL MUJIB", "NUR AFNISARI", 
+            "NUR ALIYAH", "NURUL IBNU FAHIRAH", "RAISHA NAZIFA LUBIS", "RANDI FRANCISKUS SINURAT", 
+            "SEPTIANA TRISNA INUL", "SINTYA WELASARI", "SISI AGUSTINA", "YULIANA MAHUL"
+        ],
+        "5B": [
+            "AHMAD MAULANA NURHUDA", "ARYA SHAPUTRA", "BAYU PRATAMA", "FITRA", 
+            "FITRI RAHMAWATI", "KRISTO IMMANUEL", "M. IRFAN K", "MARIANUS SIBU LAKA", 
+            "MASYA BUTARBUTAR", "MOLGAN SAPUTRA", "MUHAMMAD ALIF VERUL VAHMI", 
+            "MUHAMMAD ARI SANDI", "NIRMADANI", "NUR FADILAH", "NUR RAVINA TASYA HALIM", 
+            "RAHIM FEBRIANSYAH FADILLAH", "RHATU RIHANA", "SITI ANUGRAH", "Sul Fikal", 
+            "YOHANES NEYMAR DE PAMA", "YOHANES PUTRA JONGKOM", "ZHAKILA ADELIA PUTRY"
+        ]
+    };
+
     const hariIni = new Date().toLocaleDateString('en-CA');
-    document.getElementById('tgl').innerText = "Hari ini: " + new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('tgl').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     window.onload = function() {
-        if (localStorage.getItem('absensi_5A') === hariIni) {
+        if (localStorage.getItem('absensi_siswa_v3') === hariIni) {
             kunciTampilan();
         }
     };
 
+    function updateNama() {
+        const kelas = document.getElementById('pilihKelas').value;
+        const selectNama = document.getElementById('namaSiswa');
+        
+        selectNama.innerHTML = '<option value="" disabled selected>-- Pilih Nama Kamu --</option>';
+        selectNama.disabled = false;
+
+        daftarSiswa[kelas].forEach(siswa => {
+            let opt = document.createElement('option');
+            opt.value = siswa;
+            opt.innerHTML = siswa;
+            selectNama.appendChild(opt);
+        });
+    }
+
     function kunciTampilan() {
         document.getElementById('btnHadir').disabled = true;
+        document.getElementById('pilihKelas').disabled = true;
+        document.getElementById('namaSiswa').disabled = true;
         document.getElementById('btnHadir').innerText = "SUDAH ABSEN";
-        document.getElementById('status').innerText = "✅ Kamu sudah absen hari ini ya!";
+        document.getElementById('status').innerText = "✅ Kamu sudah absen hari ini.";
         document.getElementById('status').style.color = "green";
     }
 
     async function kirimAbsen() {
+        const kelas = document.getElementById('pilihKelas').value;
         const nama = document.getElementById('namaSiswa').value;
         const btn = document.getElementById('btnHadir');
         const st = document.getElementById('status');
 
-        if (!nama) { 
-            Swal.fire({ icon: 'warning', title: 'Eh, Lupa!', text: 'Pilih nama kamu dulu ya!', confirmButtonColor: '#4a90e2' });
+        if (!kelas || !nama) { 
+            Swal.fire({ icon: 'warning', title: 'Belum Lengkap', text: 'Pilih Kelas dan Nama dulu ya!', confirmButtonColor: '#4a90e2' });
             return; 
         }
 
         btn.disabled = true;
         btn.innerText = "Mengirim...";
-        st.innerText = "Sabar ya, lagi dicatat...";
 
         try {
             await fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify({ nama: nama, kelas: "5A" })
+                body: JSON.stringify({ nama: nama, kelas: kelas })
             });
 
-            localStorage.setItem('absensi_5A', hariIni);
+            localStorage.setItem('absensi_siswa_v3', hariIni);
             kunciTampilan();
             
-            // POP-UP KEREN BERHASIL
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: 'Hore! Absen kamu sudah masuk. Selamat belajar!',
+                text: `Terima kasih ${nama} dari kelas ${kelas}, absen kamu sudah masuk!`,
                 confirmButtonColor: '#4a90e2'
             });
             
         } catch (e) {
-            Swal.fire({ icon: 'error', title: 'Waduh!', text: 'Gagal kirim. Coba lagi ya!', confirmButtonColor: '#4a90e2' });
+            Swal.fire({ icon: 'error', title: 'Gagal', text: 'Coba lagi ya!', confirmButtonColor: '#4a90e2' });
             btn.disabled = false;
             btn.innerText = "SAYA HADIR";
         }
